@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 class Trip extends Equatable {
   final List<String> places;
   final List<String> transport;
+  final String userId;
 
   final String tripName;
   final DateTime startDate;
@@ -13,7 +14,7 @@ class Trip extends Equatable {
 
   Trip({
     this.places, this.transport, this.tripName, this.startDate,
-    this.endDate, this.locations, this.totalCost
+    this.endDate, this.locations, this.totalCost, this.userId
   });
 
   @override
@@ -32,6 +33,7 @@ Map<String, dynamic> _tripToJson(Trip trip) {
   return <String, dynamic> {
     'places': trip.places,
     'transport': trip.transport,
+    'userId': trip.userId,
     'tripName': trip.tripName,
     'startDate': trip.startDate,
     'endDate': trip.endDate,
@@ -44,6 +46,7 @@ Trip _tripFromJson(Map<dynamic, dynamic> json) =>
   Trip(
     places: json['places'],
     transport: json['transport'],
+    userId: json['userId'],
     tripName: json['tripName'],
     startDate: json['startDate'] == null ? null
       : (json['startDate'] as Timestamp).toDate(),

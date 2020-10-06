@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
-import 'package:world_wanders/business_logic/models/transport.dart';
+import 'package:world_wanders/models/transport.dart';
 import 'package:world_wanders/repositories/firebase_base.dart';
 import 'package:world_wanders/services/logger.dart';
 import 'package:world_wanders/utils/constants/firebase_constants.dart';

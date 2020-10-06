@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:world_wanders/business_logic/models/user_profile.dart';
+import 'package:world_wanders/models/user_profile.dart';
 
 class User extends Equatable {
   final UserProfile userProfile;

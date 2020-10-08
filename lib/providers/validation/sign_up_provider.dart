@@ -37,34 +37,13 @@ class SignUpProvider extends ChangeNotifier {
   }
 
   void changeEmail(String email) {
-    if(isEmail(email))
-      _email = Validation(value: email, error: null);
-    else
-      _email = Validation(value: null, error: 'Please enter a valid email');
+    _email = ValidationConstants.isValidEmail(email);
 
     notifyListeners();
   }
 
   void changePassword(String pwd) {
-    final alphaLower = whitelist(pwd, 'a-z').length;
-    final alphaUpper = whitelist(pwd, 'A-Z').length;
-    final nums = whitelist(pwd, '0-9').length;
-    final nonAlphaNums = blacklist(pwd, 'a-zA-Z0-9').length;
-
-    if(pwd.length < ValidationConstants.MIN_PWD)
-      _password = Validation(value: null, error: 'Password is too short. Minimum length of 8 characters.');
-    else if(pwd.length > ValidationConstants.MAX_PWD)
-      _password = Validation(value: null, error: 'Password is too long. Maximum length of 128 characters.');
-    else if(alphaLower < ValidationConstants.MIN_ALPHA_LWR)
-      _password = Validation(value: null, error: 'A minimum of ${ValidationConstants.MIN_ALPHA_LWR} lowercase character(s) needed.');
-    else if(alphaUpper < ValidationConstants.MIN_ALPHA_UPR)
-      _password = Validation(value: null, error: 'A minimum of ${ValidationConstants.MIN_ALPHA_UPR} uppercase character(s) needed.');
-    else if(nums < ValidationConstants.MIN_NUM)
-      _password = Validation(value: null, error: 'A minimum of ${ValidationConstants.MIN_NUM} numeric character(s) needed.');
-    else if(nonAlphaNums < ValidationConstants.MIN_SPECIAL)
-      _password = Validation(value: null, error: 'A minimum of ${ValidationConstants.MIN_SPECIAL} special character(s) needed.');
-    else
-      _password = Validation(value: pwd, error: null);
+    _password = ValidationConstants.isValidPassword(pwd);
 
     notifyListeners();
   }

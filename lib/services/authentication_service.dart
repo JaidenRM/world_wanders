@@ -46,13 +46,16 @@ class AuthenticationService implements AuthenticationServiceInterface {
     }
   }
 
-  Future<void> signOut() {
+  Future<void> signOut() async {
     _logger.i('Signed out');
-    return _fba.signOut();
+    await _fba.signOut();
+    return await _googleSignIn.signOut();
   }
 
-  bool isEmailVerified() {
-    return _fba.currentUser.emailVerified;
+  Future<bool> isEmailVerified() async {
+    await _fba.currentUser?.reload();
+    final emailv = _fba.currentUser?.emailVerified;
+    return emailv ?? false;
   }
 
   bool isSignedIn() {
@@ -63,7 +66,7 @@ class AuthenticationService implements AuthenticationServiceInterface {
     _logger.i('Sending email verification...');
     final user = _fba.currentUser;
 
-    if(user.emailVerified) {
+    if(user != null && !user.emailVerified) {
       return user.sendEmailVerification();
     }
       
@@ -73,9 +76,21 @@ class AuthenticationService implements AuthenticationServiceInterface {
 
   Future<void> signInWithGoogle() async {
     try {
-      await _googleSignIn.signIn();
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken
+        , accessToken: googleAuth.accessToken
+      );
+
+      final status = await _fba.signInWithCredential(credential);
+      return Status('Signed in with Google successfully!', true);
+    } on FirebaseAuthException catch (e) {
+      _logger.w('Signed in with Google FAILED with FirebaseAuth code ${e.code}');
+      return Status(e.message, false);
     } catch (e) {
-      _logger.e(e.toString());
+      _logger.e('FAILED to sign in with Google with error message: ${e.toString()}');
+      return Status('Unknown error', false);
     }
   }
 

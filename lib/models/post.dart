@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 class Post extends Equatable {
   final String tripId;
   final String placeId;
+  final String userId;
 
   final GeoPoint coords;
   final String title;
@@ -12,14 +13,14 @@ class Post extends Equatable {
   final List<String> images;
 
   Post({
-    this.tripId, this.placeId, this.coords, this.title,
+    this.tripId, this.placeId, this.userId, this.coords, this.title,
     this.description, this.dateCreated, this.images
   });
 
   @override
   List<Object> get props => [
     tripId, placeId, coords, title, description, 
-    dateCreated, images
+    dateCreated, images, userId
   ];
 
   factory Post.fromJson(Map<dynamic, dynamic> json) => _postFromJson(json);
@@ -32,6 +33,7 @@ Map<String, dynamic> _postToJson(Post post) {
   return <String, dynamic> {
     'tripId': post.tripId,
     'placeId': post.placeId,
+    'userId': post.userId,
     'coords': post.coords,
     'title': post.title,
     'description': post.description,
@@ -46,6 +48,7 @@ Post _postFromJson(Map<dynamic, dynamic> json) =>
   Post(
     tripId: json['tripId'],
     placeId: json['placeId'],
+    userId: json['userId'],
     coords: json['coords'],
     title: json['title'],
     description: json['description'],

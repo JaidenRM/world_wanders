@@ -3,8 +3,8 @@ import 'package:world_wanders/utils/status.dart';
 
 abstract class AuthenticationServiceInterface {
   bool isSignedIn();
-  bool isEmailVerified();
-
+  
+  Future<bool> isEmailVerified();
   Future<Status> signIn(String email, String password);
   Future<Status> signUp(String email, String password);
   Future<Status> verify(String code);

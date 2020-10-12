@@ -5,16 +5,19 @@ import 'package:world_wanders/utils/validation.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthenticationServiceInterface _authService;
+  bool _hasSignedIn = false;
+  bool _emailVerified = false;
   
-  Validation _authenticated;
-  Validation _email;
-  Validation _password;
+  Validation _authenticated = Validation(value: null, error: null);
+  Validation _email = Validation(value: null, error: null);
+  Validation _password = Validation(value: null, error: null);
   String _error;
   
   Validation get authenticated => _authenticated;
   Validation get email => _email;
   Validation get password => _password;
 
+  bool get emailVerified => _emailVerified;
   bool get isValid => _email.value != null && _password.value != null;
 
   AuthProvider(AuthenticationServiceInterface authService)
@@ -25,9 +28,10 @@ class AuthProvider extends ChangeNotifier {
         if(user == null) {
           _authenticated = Validation(
             value: null,
-            error: _error == null ? 'User not authenticated. Please relog.' : _error
+            error: _error == null && _hasSignedIn ? 'User not authenticated. Please relog.' : _error
           );
         } else {
+          _emailVerified = user.emailVerified;
           _authenticated = Validation(value: ValidationConstants.TRUE, error: null);
         }
 
@@ -58,9 +62,21 @@ class AuthProvider extends ChangeNotifier {
         await _authService.signInWithGoogle();
         break;
     }
+
+    _hasSignedIn = true;
   }
 
   void signOut() async {
+    _hasSignedIn = false;
     await _authService.signOut();
+  }
+
+  void verifyEmail() async {
+    if(await _authService.isEmailVerified()) {
+      _emailVerified = true;
+      notifyListeners();
+    }
+    else
+      _authService.sendEmailVerification();
   }
 }

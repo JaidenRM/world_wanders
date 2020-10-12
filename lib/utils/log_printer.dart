@@ -10,7 +10,7 @@ class SimpleLogPrinter extends LogPrinter {
     final emoji = PrettyPrinter.levelEmojis[event.level];
     print(color('$emoji $className - ${event.message}'));
     
-    return null;
+    return [];
   }
 
 }

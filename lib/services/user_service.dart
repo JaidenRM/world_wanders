@@ -35,11 +35,15 @@ class UserService implements UserServiceInterface {
   @override
   Future<Status> setProfile(UserProfile profile) async {
     final user = await _getUser();
+    final uid = _fba.currentUser.uid;
+
+    // if(user == null)
+    //   return Status('Could not get current user', false);
     
     return _userRepository.setUser(Model.User(
-      savedPlaces: user.savedPlaces,
+      savedPlaces: user?.savedPlaces,
       userProfile: profile,  
-    ))
+    ), uid)
       .then((value) {
         _logger.i('User set!');
         return Status('Profile saved successfully!', true);

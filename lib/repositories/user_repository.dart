@@ -28,18 +28,19 @@ class UserRepository extends FirebaseDB {
 
     try {
       final user = await cref.doc(id).get();
+      final jsonUser = User.fromJson(user.data());
       _logger.i("user found!");
-      return User.fromJson(user.data());
+      return jsonUser;
     } catch(e) {
       _logger.w("looking for user FAILED");
       return null;
     }
   }
 
-  Future<void> setUser(User user) {
+  Future<void> setUser(User user, String id) {
     _logger.i("Setting user...");
 
-    return cref.add(user.toJson());
+    return cref.doc(id).set(user.toJson());
       //.then((value) => _logger.i("User set!"))
       //.catchError((e) => _logger.w("Setting user FAILED!"));
   }

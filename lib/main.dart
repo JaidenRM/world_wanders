@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: UiConstants.PRIMARY_COLOUR,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: UiConstants.FONT_FAM_DEFAULT,
         ),
         //move email logic into homescreen for navigation issues?
         home: Consumer<AuthProvider>(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:world_wanders/providers/validation/sign_up_provider.dart';
 import 'package:world_wanders/ui/buttons/default_button.dart';
+import 'package:world_wanders/ui/utils/my_background.dart';
 import 'package:world_wanders/ui/utils/my_loading_widget.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
@@ -14,7 +15,7 @@ class SignUpForm extends StatelessWidget {
       appBar: AppBar(
         title: Text('Sign up'),
       ),
-      body: _viewBasedOnState(context),
+      body: MyBackground(child: _viewBasedOnState(context)),
     );
   }
 
@@ -29,7 +30,7 @@ class SignUpForm extends StatelessWidget {
     } 
     else {
       return Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(UiConstants.PAD_BASE),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -37,21 +38,27 @@ class SignUpForm extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'First Name',
-                  errorText: signUpProvider.firstName.error
+                  errorText: signUpProvider.firstName.error,
+                  errorStyle: UiConstants.TS_ERR,
+                  labelStyle: UiConstants.TS_DEFAULT,
                 ),
                 onChanged: (String val) => signUpProvider.changeFirstName(val)
               ),
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Last Name',
-                  errorText: signUpProvider.lastName.error
+                  errorText: signUpProvider.lastName.error,
+                  errorStyle: UiConstants.TS_ERR,
+                  labelStyle: UiConstants.TS_DEFAULT,
                 ),
                 onChanged: (String val) => signUpProvider.changeLastName(val)
               ),
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  errorText: signUpProvider.email.error
+                  errorText: signUpProvider.email.error,
+                  errorStyle: UiConstants.TS_ERR,
+                  labelStyle: UiConstants.TS_DEFAULT,
                 ),
                 onChanged: (String val) => signUpProvider.changeEmail(val),
                 keyboardType: TextInputType.emailAddress,
@@ -60,6 +67,8 @@ class SignUpForm extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   errorText: signUpProvider.password.error,
+                  errorStyle: UiConstants.TS_ERR,
+                  labelStyle: UiConstants.TS_DEFAULT,
                 ),
                 onChanged: (String val) => signUpProvider.changePassword(val),
                 obscureText: true,

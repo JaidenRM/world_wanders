@@ -30,13 +30,16 @@ class VerifyEmailScreen extends StatelessWidget {
       return MyErrorWidget('Failed to load user information.');
     } else {
       return Padding(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(UiConstants.PAD_BASE),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Hi ${userProvider.firstName},'),
-            Text('Please verify your email address. We\'ve sent an email to ${userProvider.email} so you can do so.'),
-            Text('Once verified or if you didn\'t receive an email press refresh'),
+            Text('Hi ${userProvider.firstName},', style: UiConstants.TS_DEFAULT,),
+            Text(
+              'Please verify your email address. We\'ve sent an email to ${userProvider.email} so you can do so.'
+              , style: UiConstants.TS_DEFAULT,
+            ),
+            Text('Once verified or if you didn\'t receive an email press refresh', style: UiConstants.TS_DEFAULT,),
             RaisedButton(
               child: Text('Refresh'),
               onPressed: () => authProvider.verifyEmail(),

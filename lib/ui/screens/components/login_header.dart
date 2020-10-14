@@ -1,33 +1,52 @@
 import 'package:flutter/cupertino.dart';
-import 'package:world_wanders/ui/utils/clippers/circle_clipper.dart';
+import 'package:world_wanders/ui/utils/clippers/globe_clipper.dart';
+import 'package:world_wanders/ui/utils/painters/globe_painter.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
 class LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
+    final logoSize = UiConstants.SIZE_LOGO;
 
     return Container(
-      height: mq.size.height * 0.35,
+      height: logoSize.height,//mq.size.height * 0.35,
+      width: logoSize.width, //mq.size.width * 0.8,
       child: Stack(
+        fit: StackFit.expand,
         alignment: Alignment.center,
         children: [
           Opacity(
             opacity: 0.7,
             child: ClipPath(
-              clipper: CircleClipper(),
+              clipper: GlobeClipper(logoSize),
               child: Image.asset(
-                'lib/assets/images/boat_mountains_sm.jpg'
+                'lib/assets/images/boat_mountains_sm.jpg',
+                fit: BoxFit.fill,
               ),
             ),
           ),
+          Opacity(
+            opacity: 0.15,
+            child: ClipPath(
+              clipper: GlobeClipper(logoSize),
+              child: Image.asset(
+                'lib/assets/images/globe_cropped.png',
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          CustomPaint(
+            painter: GlobePainter(logoSize),
+            child: Container(),
+          ),
           Column(
             children: [
-              Text('World', style: TextStyle(fontSize: UiConstants.FONT_H2),),
-              Text('Wanders', style: TextStyle(fontSize: UiConstants.FONT_H2),),
+              SizedBox(height: 10.0),
+              Text('World', style: UiConstants.TS_HDR),
+              Text('Wanders', style: UiConstants.TS_HDR),
             ],
-          )
+          ),
         ],
       ),
     );

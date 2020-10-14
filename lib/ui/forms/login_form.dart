@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:world_wanders/providers/validation/auth_provider.dart';
 import 'package:world_wanders/ui/buttons/default_button.dart';
@@ -15,11 +15,13 @@ class LoginForm extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
     final authProvider = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       body: MyBackground(
         child: Padding(
-          padding: EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(UiConstants.PAD_BASE),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -30,6 +32,8 @@ class LoginForm extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Email',
                     errorText: authProvider.email.error,
+                    errorStyle: UiConstants.TS_ERR,
+                    labelStyle: UiConstants.TS_DEFAULT,
                   ),
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (String val) => authProvider.changeEmail(val),
@@ -38,20 +42,25 @@ class LoginForm extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     errorText: authProvider.password.error,
+                    errorStyle: UiConstants.TS_ERR,
+                    labelStyle: UiConstants.TS_DEFAULT,
                   ),
                   obscureText: true,
                   onChanged: (String val) => authProvider.changePassword(val),
                 ),
                 SizedBox(height: 20.0),
                 DefaultButton(
-                  child: Text('Log In'),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: mq.size.width * 0.75,
+                    child: Text('Log In'),
+                  ),
                   onPressed: authProvider.isValid ?
                     () => authProvider.signIn(AuthType.EmailPwd) :
                     null
                 ),
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceBetween,
-                  buttonPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                   children: [
                     DefaultButton(
                       child: Text('Sign Up'),
@@ -62,10 +71,20 @@ class LoginForm extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: 10.0),
+                RichText(
+                  text: TextSpan(
+                    text: 'Forgot your password?',
+                    style: UiConstants.TS_DEFAULT,
+                    recognizer: TapGestureRecognizer()..onTap =
+                      () => Navigator.of(context).pushNamed(RouteConstants.FORGOT_PWD)
+                  ),
+                ),
+                SizedBox(height: 10.0,),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Text(authProvider.authenticated.error ?? '', style: TextStyle(color: Colors.red),),
-                ), //look into this
+                  child: Text(authProvider.authenticated.error ?? '', style: UiConstants.TS_ERR,),
+                ),
               ],
             ),
           ),

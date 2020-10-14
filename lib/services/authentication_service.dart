@@ -94,6 +94,22 @@ class AuthenticationService implements AuthenticationServiceInterface {
     }
   }
 
+  //Firebase email allows any pwd > 6 chars... need to think of whether to change pwd policy to
+  //match this or make my own auth system... perhaps send a token to the email to verify and change pwd in app?
+  Future<Status> sendEmailForgotPassword(String email) async {
+    try {
+      
+      await _fba.sendPasswordResetEmail(email: email);
+      return Status('Email sent successfully!', true);
+    } on FirebaseAuthException catch (e) {
+      _logger.w('Forgot Pwd FAILED with FirebaseAuth code ${e.code}');
+      return Status(e.message, false);
+    } catch (e) {
+      _logger.e('FAILED to send password reset email with error message: ${e.toString()}');
+      return Status('Unknown error', false);
+    }
+  }
+
   Future<Status> verify(String code) async {
     try {
       await _fba.checkActionCode(code);

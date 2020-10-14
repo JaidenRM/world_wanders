@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
-class MyErrorWidget extends StatelessWidget {
-  final String _error;
+class MySuccessWidget extends StatelessWidget {
+  final String _msg;
 
-  MyErrorWidget(String errorMsg)
-    : _error = errorMsg;
+  MySuccessWidget(String msg)
+    : _msg = msg;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class MyErrorWidget extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: EdgeInsets.all(UiConstants.PAD_BASE),
-        child: Text(_error, style: UiConstants.TS_ERR,),
+        child: Text(_msg, style: UiConstants.TS_SUCCESS,),
       )
     );
   }

@@ -11,6 +11,7 @@ abstract class AuthenticationServiceInterface {
   Future<void> signInWithGoogle();
   Future<void> signOut();
   Future<void> sendEmailVerification();
+  Future<Status> sendEmailForgotPassword(String email);
 
   Stream<User> get authStream;
 }

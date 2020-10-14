@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:world_wanders/services/interfaces/authentication_service_interface.dart';
+import 'package:world_wanders/utils/constants/ui_constants.dart';
 import 'package:world_wanders/utils/constants/validation_constants.dart';
 import 'package:world_wanders/utils/validation.dart';
 
 class AuthProvider extends ChangeNotifier {
+  UiState _state = UiState.Ready;
   AuthenticationServiceInterface _authService;
   bool _hasSignedIn = false;
   bool _emailVerified = false;
@@ -16,6 +18,7 @@ class AuthProvider extends ChangeNotifier {
   Validation get authenticated => _authenticated;
   Validation get email => _email;
   Validation get password => _password;
+  UiState get state => _state;
 
   bool get emailVerified => _emailVerified;
   bool get isValid => _email.value != null && _password.value != null;
@@ -46,7 +49,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void changePassword(String pwd) {
-    _password = ValidationConstants.isValidPassword(pwd);
+    //_password = ValidationConstants.isValidPassword(pwd);
+    //change due to FirebaseAuth reset only having a security rule of > 6 chars
+    //so need to allow sign in with pwd that breaches our own rules
+    _password = Validation(value: pwd, error: null);
 
     notifyListeners();
   }
@@ -67,7 +73,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void signOut() async {
+    _state = UiState.Loading;
+    notifyListeners();
+    
     _hasSignedIn = false;
+    _state = UiState.Ready;
     await _authService.signOut();
   }
 

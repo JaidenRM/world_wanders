@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 
 class MyBackground extends StatelessWidget {
   final Widget _child;
+  final AlignmentGeometry _alignment;
 
-  MyBackground({ @required Widget child, Key key })
+  MyBackground({ Key key, @required Widget child, AlignmentGeometry alignment = Alignment.center })
     : assert(child != null),
       _child = child,
+      _alignment = alignment,
       super(key: key);
 
   @override
@@ -15,7 +17,7 @@ class MyBackground extends StatelessWidget {
     return Container(
       height: mq.size.height,
       child: Stack(
-        alignment: Alignment.center,
+        alignment: _alignment,
         children: [
           Positioned(
             bottom: 0,

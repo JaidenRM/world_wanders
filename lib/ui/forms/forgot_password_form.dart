@@ -19,7 +19,8 @@ class ForgotPasswordForm extends StatelessWidget {
         title: Text('Forgot password'),
       ),
       body: MyBackground(
-        child: _viewBasedOnState(context)
+        child: _viewBasedOnState(context),
+        alignment: Alignment.topCenter,
       ),
     );
   }
@@ -38,6 +39,8 @@ class ForgotPasswordForm extends StatelessWidget {
             children: [
               Container(
                 width: mq.size.width * 0.75,
+                height: mq.size.height * 0.2,
+                alignment: Alignment.bottomCenter,
                 child: Text('Forgot your password?', style: UiConstants.TS_HDR, textAlign: TextAlign.center,),
               ),
               SizedBox(height: 30.0),

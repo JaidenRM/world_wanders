@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
+import 'package:world_wanders/models/user_profile.dart';
+import 'package:world_wanders/repositories/user_repository.dart';
 import 'package:world_wanders/services/interfaces/authentication_service_interface.dart';
 import 'package:world_wanders/services/logger.dart';
 import 'package:world_wanders/utils/status.dart';
+import 'package:world_wanders/models/user.dart' as Model;
 
 class AuthenticationService implements AuthenticationServiceInterface {
   final FirebaseAuth _fba;
+  final UserRepository _userRepository = UserRepository();
   final Logger _logger;
   final GoogleSignIn _googleSignIn;
   static const String _name = "AuthenticationRepository";
@@ -33,9 +37,10 @@ class AuthenticationService implements AuthenticationServiceInterface {
     }
   }
 
-  Future<Status> signUp(String email, String password) async {
+  Future<Status> signUp(String email, String password, { UserProfile userProfile }) async {
     try {
       final userCred = await _fba.createUserWithEmailAndPassword(email: email, password: password);
+      await _userRepository.setUser(Model.User(userProfile: userProfile), userCred.user.uid);
       return Status('Signed up successfully!', true);
     } on FirebaseAuthException catch (e) {
       _logger.w('Signed in FAILED with FirebaseAuth code ${e.code}');
@@ -74,8 +79,9 @@ class AuthenticationService implements AuthenticationServiceInterface {
     return null;
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<Status> signInWithGoogle() async {
     try {
+      final UserRepository userRepository = UserRepository();
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
@@ -84,6 +90,24 @@ class AuthenticationService implements AuthenticationServiceInterface {
       );
 
       final status = await _fba.signInWithCredential(credential);
+
+      if(status.additionalUserInfo.isNewUser) {
+        try {
+          final names = status.user.displayName.split(' ');
+          final Model.User user = Model.User(
+            userProfile: UserProfile(
+              firstName: names[0],
+              lastName: names.length > 1 ? names[names.length-1] : '',
+              email: status.user.email,
+            ),
+          ); 
+          await userRepository.setUser(user, status.user.uid);
+        } catch (e) {
+          _logger.e('Google Sign In FAILED to create a new user with error message: ${e.toString()}');
+          return Status('Something went wrong when trying to create an account with your Google profile', false);
+        }
+      }
+
       return Status('Signed in with Google successfully!', true);
     } on FirebaseAuthException catch (e) {
       _logger.w('Signed in with Google FAILED with FirebaseAuth code ${e.code}');

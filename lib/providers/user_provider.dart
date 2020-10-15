@@ -9,7 +9,7 @@ class UserProvider extends ChangeNotifier {
   UserProvider(UserServiceInterface userService)
     : assert(userService != null),
       _userService = userService {
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
           initState();
         });
       }

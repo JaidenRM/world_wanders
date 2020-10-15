@@ -12,6 +12,7 @@ class SignUpProvider extends ChangeNotifier {
   final UserServiceInterface _userService;
 
   UiState _state = UiState.Ready;
+  String _error;
   Validation _firstName = Validation(value: null, error: null);
   Validation _lastName = Validation(value: null, error: null);
   Validation _email = Validation(value: null, error: null);
@@ -26,6 +27,7 @@ class SignUpProvider extends ChangeNotifier {
       _authService = authService;
 
   UiState get state => _state;
+  String get errorMsg => _error;
   Validation get firstName => _firstName;
   Validation get lastName => _lastName;
   Validation get email => _email;
@@ -69,15 +71,14 @@ class SignUpProvider extends ChangeNotifier {
     _state = UiState.Loading;
     notifyListeners();
 
-    var status = await _authService.signUp(_email.value, _password.value);
+    var profile = UserProfile(
+      firstName: _firstName.value,
+      lastName: _lastName.value,
+      email: _email.value,
+    );
+    var status = await _authService.signUp(_email.value, _password.value, userProfile: profile);
     _state = status.isSuccess ? UiState.Completed : UiState.Error;
-
-    if(status.isSuccess)
-      await _userService.setProfile(UserProfile(
-        firstName: _firstName.value,
-        lastName: _lastName.value,
-        email: _email.value,
-      ));
+    _error = status.isSuccess ? '' : status.message;
 
     notifyListeners();
   }

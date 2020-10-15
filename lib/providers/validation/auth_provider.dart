@@ -13,7 +13,7 @@ class AuthProvider extends ChangeNotifier {
   Validation _authenticated = Validation(value: null, error: null);
   Validation _email = Validation(value: null, error: null);
   Validation _password = Validation(value: null, error: null);
-  String _error;
+  String _error = '';
   
   Validation get authenticated => _authenticated;
   Validation get email => _email;
@@ -63,13 +63,19 @@ class AuthProvider extends ChangeNotifier {
       case AuthType.EmailPwd:
         final status = await _authService.signIn(_email.value, _password.value);
         _error = status.isSuccess ? null : status.message;
+        _hasSignedIn = status.isSuccess;
         break;
       case AuthType.Google:
-        await _authService.signInWithGoogle();
+        final status = await _authService.signInWithGoogle();
+        _error = status.isSuccess ? null : status.message;
+        _hasSignedIn = status.isSuccess;
         break;
     }
 
-    _hasSignedIn = true;
+    if(_error != null)
+      _authenticated = Validation(value: null, error: _error);
+
+    notifyListeners();
   }
 
   void signOut() async {

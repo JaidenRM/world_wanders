@@ -60,18 +60,20 @@ class LoginForm extends StatelessWidget {
                     null
                 ),
                 ButtonBar(
-                  alignment: MainAxisAlignment.spaceBetween,
+                  alignment: MainAxisAlignment.spaceAround,
+                  buttonMinWidth: mq.size.width * 0.4,
                   children: [
                     DefaultButton(
                       child: Text('Sign Up'),
                       onPressed: () => Navigator.of(context).pushNamed(RouteConstants.SIGNUP),
+                      width: mq.size.width * 0.4,
                     ),
                     GoogleSignInButton(
                       onPressed: () => authProvider.signIn(AuthType.Google),
                     ),
                   ],
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: 20.0),
                 RichText(
                   text: TextSpan(
                     text: 'Forgot your password?',

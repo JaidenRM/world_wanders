@@ -7,11 +7,9 @@ import 'package:world_wanders/services/authentication_service.dart';
 import 'package:world_wanders/services/user_service.dart';
 import 'package:world_wanders/ui/screens/home_screen.dart';
 import 'package:world_wanders/ui/screens/verify_email_screen.dart';
-import 'package:world_wanders/utils/constants/route_constants.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 import 'package:world_wanders/utils/constants/validation_constants.dart';
 import 'package:world_wanders/utils/routes.dart';
-
 import 'ui/forms/login_form.dart';
 
 void main() async {

@@ -31,6 +31,13 @@ class MyApp extends StatelessWidget {
           primaryColor: UiConstants.PRIMARY_COLOUR,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: UiConstants.FONT_FAM_DEFAULT,
+          cardTheme: CardTheme(
+            color: UiConstants.SECONDARY_COLOUR,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 10.0,
+          ),
         ),
         //move email logic into homescreen for navigation issues?
         home: Consumer<AuthProvider>(

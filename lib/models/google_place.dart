@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:world_wanders/utils/constants/places_constants.dart';
+import 'package:world_wanders/utils/helpers.dart';
 
 class GooglePlace extends Equatable {
   static const String _photoUrl = "https://maps.googleapis.com/maps/api/place/photo";
@@ -55,6 +56,16 @@ class GooglePlace extends Equatable {
       + "&${PlacesConstants.PARM_MAX_HEIGHT}=$maxHeight"
       + "&${PlacesConstants.PARM_MAX_WIDTH}=$maxWidth"
       + "&${PlacesConstants.PARM_PHOTO_REF}=$photoRef";
+  }
+
+  String stringifyTypes() {
+    List<String> humanisedStrings = [];
+
+    types.forEach((element) { 
+      humanisedStrings.add(Helpers.humanise(element));
+    });
+
+    return humanisedStrings.join(", ");
   }
 }
 

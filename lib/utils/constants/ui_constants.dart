@@ -31,6 +31,11 @@ class UiConstants {
     fontFamily: FONT_FAM_HDR,
     fontWeight: FontWeight.bold,
   );
+  static const TextStyle TS_SUB_HDR = TextStyle(
+    fontSize: UiConstants.FONT_H3,
+    fontFamily: FONT_FAM_HDR,
+    fontWeight: FontWeight.bold,
+  );
   static const TextStyle TS_ERR = TextStyle(
     fontWeight: FontWeight.bold,
     color: ERR_COLOUR,
@@ -41,6 +46,11 @@ class UiConstants {
   );
   static const TextStyle TS_DEFAULT = TextStyle(
     color: PRIMARY_COLOUR,
+    fontFamily: FONT_FAM_DEFAULT,
+    fontSize: FONT_BASE,
+  );
+  static const TextStyle TS_DEF_SEC = TextStyle(
+    color: SECONDARY_COLOUR,
     fontFamily: FONT_FAM_DEFAULT,
     fontSize: FONT_BASE,
   );

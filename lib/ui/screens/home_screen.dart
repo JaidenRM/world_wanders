@@ -7,6 +7,7 @@ import 'package:world_wanders/ui/buttons/default_button.dart';
 import 'package:world_wanders/ui/utils/my_background.dart';
 import 'package:world_wanders/ui/utils/my_error_widget.dart';
 import 'package:world_wanders/ui/utils/my_loading_widget.dart';
+import 'package:world_wanders/utils/constants/route_constants.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -67,7 +68,7 @@ class HomeScreen extends StatelessWidget {
               SizedBox(height: 10.0,),
               DefaultButton(
                 child: Text('Browse locations'),
-                onPressed: null,
+                onPressed: () => Navigator.of(context).pushNamed(RouteConstants.SEARCH_LOCATIONS),
                 width: btnWidth,
               ),
               SizedBox(height: 10.0,),

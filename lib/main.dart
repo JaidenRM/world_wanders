@@ -7,11 +7,9 @@ import 'package:world_wanders/services/authentication_service.dart';
 import 'package:world_wanders/services/user_service.dart';
 import 'package:world_wanders/ui/screens/home_screen.dart';
 import 'package:world_wanders/ui/screens/verify_email_screen.dart';
-import 'package:world_wanders/utils/constants/route_constants.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 import 'package:world_wanders/utils/constants/validation_constants.dart';
 import 'package:world_wanders/utils/routes.dart';
-
 import 'ui/forms/login_form.dart';
 
 void main() async {
@@ -33,6 +31,13 @@ class MyApp extends StatelessWidget {
           primaryColor: UiConstants.PRIMARY_COLOUR,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: UiConstants.FONT_FAM_DEFAULT,
+          cardTheme: CardTheme(
+            color: UiConstants.SECONDARY_COLOUR,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            elevation: 10.0,
+          ),
         ),
         //move email logic into homescreen for navigation issues?
         home: Consumer<AuthProvider>(

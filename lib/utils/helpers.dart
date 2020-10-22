@@ -21,6 +21,7 @@ class Helpers {
   static String humanise(String str, { CaseType cType = CaseType.SnakeCase }) {
     var humanStr = "";
     var isUnderscore = false;
+    str = str.trim();
 
     for(int i = 0; i < str.length; i++) {
       if(i == 0)

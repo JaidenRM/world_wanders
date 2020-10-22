@@ -5,6 +5,8 @@ import 'package:world_wanders/utils/constants/places_constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import 'package:world_wanders/utils/secrets.dart';
+
 //use this as an interface instead maybe?
 abstract class PlacesRequest {
   final Logger _logger;
@@ -12,7 +14,7 @@ abstract class PlacesRequest {
 
   String _baseUrl = "https://maps.googleapis.com/maps/api/place";
   String _requestUrl;
-  String _apiKey = PlacesConstants.GOOGLE_API_KEY;
+  String _apiKey = Secrets.GOOGLE_API_KEY;
 
   String get requestUrl => _requestUrl;
 

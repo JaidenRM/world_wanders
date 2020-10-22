@@ -17,8 +17,6 @@ class PlacesConstants {
   static const int PHOTO_MAX_WIDTH = 1600;
   static const int PHOTO_MAX_HEIGHT = 1600;
   static const int PLACE_RATING_MAX = 5;
-
-  static const String GOOGLE_API_KEY = "AIzaSyBVJS3scal30ALC3dAROjxJO2UAs5waNbU";
   
   static const int PARM_REGION_LENGTH = 2;
   static const int PARM_RADIUS_MAX = 50000;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:world_wanders/models/google_place.dart';
 import 'package:world_wanders/services/interfaces/user_service_interface.dart';
+import 'package:world_wanders/services/places_request.dart';
 import 'package:world_wanders/services/text_search_request.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
@@ -26,9 +27,11 @@ class PlacesProvider extends ChangeNotifier {
   
   PlacesProvider({ 
     UserServiceInterface userService,
+    List<GooglePlace> places
   })
     : assert(userService != null),
-      _userService = userService;
+      _userService = userService,
+      _gPlaces = places ?? [];
 
   void changeSearchText(String text) {
     _searchText = text;
@@ -41,7 +44,12 @@ class PlacesProvider extends ChangeNotifier {
     notifyListeners();
 
     var req = TextSearchRequest(query: _searchText);
-    _gPlaces = await req.fetchRequest();
+    await searchRequest(req);
+  }
+
+  Future<void> searchRequest(PlacesRequest request) async {
+
+    _gPlaces = await request.fetchRequest();
     _state = UiState.Completed;
 
     if(_gPlaces.length > 0) {

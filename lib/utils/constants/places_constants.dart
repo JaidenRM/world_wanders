@@ -6,6 +6,17 @@ enum PriceRange {
   VeryExpensive
 }
 
+enum RankBy {
+  Prominence,
+  Distance
+}
+
+extension ParseToString on RankBy {
+  String parseToString() {
+    return this.toString()?.split('.')?.last;
+  }
+}
+
 class PlacesConstants {
   static const String REQ_TYPE_FIND = "findplacefromtext";
   static const String REQ_TYPE_TEXT = "textsearch";
@@ -35,6 +46,7 @@ class PlacesConstants {
   static const String PARM_PHOTO_REF = "photoreference";
   static const String PARM_MAX_HEIGHT = "maxheight";
   static const String PARM_MAX_WIDTH = "maxwidth";
+  static const String PARM_KEYWORD = "keyword";
 
   static const List<String> PARM_TYPE_VALUES = [
     "amusement_park", "aquarium", "art_gallery",

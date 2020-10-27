@@ -26,9 +26,8 @@ class GooglePlaceListTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(UiConstants.PAD_BASE),
         child: Column(
-          //leading: Image.network(_gPlace.iconUrl, width: mq.size.width * 0.2,),
           children: [
-            Text(_gPlace.name, style: UiConstants.TS_SUB_HDR,),
+            Text(_gPlace.name, style: UiConstants.TS_SUB_HDR),
             SizedBox(height: 10.0),
             Row(
               children: [
@@ -54,20 +53,21 @@ class GooglePlaceListTile extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(height: 10.0),
-          Row(
-            children: [
-              Text(_gPlace.rating?.toString(), style: textStyle,),
-              SizedBox(width: 5.0,),
-              StarRating(_gPlace.rating?.toDouble(), PlacesConstants.PLACE_RATING_MAX),
-              SizedBox(width: 5.0,),
-              Text("(${_gPlace.numOfRatings})", style: textStyle,),
-              Expanded(child: SizedBox()),
-            ],
-          ),
+          if(_gPlace.rating != null)
+            Row(
+              children: [
+                Text(_gPlace.rating.toString(), style: textStyle,),
+                SizedBox(width: 5.0,),
+                StarRating(_gPlace.rating.toDouble(), PlacesConstants.PLACE_RATING_MAX),
+                SizedBox(width: 5.0,),
+                Text("(${_gPlace.numOfRatings})", style: textStyle,),
+                Expanded(child: SizedBox()),
+              ],
+            ),
           SizedBox(height: 5.0),
-          Text(_gPlace.stringifyTypes(), style: textStyle),
+          Align(alignment: Alignment.centerLeft, child: Text(_gPlace.stringifyTypes(), style: textStyle)),
           SizedBox(height: 5.0,),
-          Text(_gPlace.address ?? _gPlace.vicinity, style: textStyle,),
+          Align(alignment: Alignment.centerLeft, child: Text(_gPlace.address ?? _gPlace.vicinity, style: textStyle,)),
         ]         
       ),
     );

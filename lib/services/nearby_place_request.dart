@@ -53,10 +53,10 @@ class NearbyPlaceRequest extends PlacesRequest {
   void addRankBy(RankBy ranking) {
     switch(ranking) {
       case RankBy.Prominence:
-        _params[PlacesConstants.PARM_RANK_BY] = ranking.parseToString();
+        _params[PlacesConstants.PARM_RANK_BY] = ranking.parseToString().toLowerCase();
         break;
       case RankBy.Distance:
-        _params[PlacesConstants.PARM_RANK_BY] = ranking.parseToString();
+        _params[PlacesConstants.PARM_RANK_BY] = ranking.parseToString().toLowerCase();
         //radius cannot exist with the above key,value combo
         _params[PlacesConstants.PARM_RADIUS] = null;
         break;

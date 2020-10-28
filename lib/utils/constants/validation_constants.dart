@@ -18,8 +18,8 @@ class ValidationConstants {
   static const String TRUE = "true";
 
   static Validation isStringNotNullOrEmpty(String str) {
-    str = trim(str);
-    final isTrue = !isNull(str) && isLength(str, 1);
+    str = trim(str ?? '');
+    final isTrue = isLength(str, 1);
 
     return Validation(
       value: isTrue ? str : null,

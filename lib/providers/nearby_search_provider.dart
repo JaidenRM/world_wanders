@@ -14,8 +14,15 @@ class NearbySearchProvider extends ChangeNotifier {
   City _selectedCity;
   UiState _state = UiState.Loading;
   String _keyword;
+  String _type;
   int _radius = 0;
   List<GooglePlace> _gPlaces = [];
+  PriceRange _minPrice;
+  PriceRange _maxPrice;
+  
+  bool _isAdvancedMenu = false;
+  bool _isOpenNow = false;
+  bool _isRankedByDist = false;
   
   List<String> get countries => _cities.fold<List<String>>([], (countries, city) {
     if(!countries.contains(city.country))
@@ -34,7 +41,14 @@ class NearbySearchProvider extends ChangeNotifier {
   City get selectedCity => _selectedCity;
   int get searchRadius => _radius;
   String get searchText => _keyword;
+  String get selectedType => _type;
   List<GooglePlace> get results => _gPlaces;
+  int get minPriceRange => _minPrice == null ? 0 : _minPrice.index + 1;
+  int get maxPriceRange => _maxPrice == null ? 0 : _maxPrice.index + 1;
+
+  bool get isAdvancedMenu => _isAdvancedMenu;
+  bool get isOpenNow => _isOpenNow;
+  bool get isRankedByDist => _isRankedByDist;
 
   NearbySearchProvider() {
     SchedulerBinding.instance.addPostFrameCallback((_) { 
@@ -74,6 +88,36 @@ class NearbySearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setPriceRange(int min, int max) {
+    bool isValidMin = min != null && min - 1 >= 0 && min <= PriceRange.values.length;
+    bool isValidMax = max != null && max - 1 >= 0 && max <= PriceRange.values.length;
+
+    _minPrice = isValidMin ? PriceRange.values[min - 1] : null;
+    _maxPrice = isValidMax ? PriceRange.values[max - 1] : null;
+
+    notifyListeners();
+  }
+
+  void toggleAdvancedMenu() {
+    _isAdvancedMenu = !_isAdvancedMenu;
+    notifyListeners();
+  }
+
+  void toggleOpenNow() {
+    _isOpenNow = !_isOpenNow;
+    notifyListeners();
+  }
+
+  void toggleRankedByDist() {
+    _isRankedByDist = !_isRankedByDist;
+    notifyListeners();
+  }
+
+  void setType(String type) {
+    _type = type;
+    notifyListeners();
+  }
+
   void setSearchRadius(int radius) {
     if(radius == null || radius < 0)
       _radius = 0;
@@ -104,6 +148,17 @@ class NearbySearchProvider extends ChangeNotifier {
     
     if(!hasReq.hasError)
       req.addKeyword(hasReq.value);
+    
+    if(_isAdvancedMenu) {
+      if(_isOpenNow)
+        req.addOpenNow();
+      if(_minPrice != null && _maxPrice != null)  
+        req.addPriceRange(_minPrice, max: _maxPrice);
+      if(_isRankedByDist)
+        req.addRankBy(RankBy.Distance);
+      if(PlacesConstants.PARM_TYPE_VALUES.contains(_type))
+        req.addType(_type);
+    }
 
     return req;
   }

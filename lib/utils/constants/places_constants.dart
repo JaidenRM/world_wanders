@@ -6,6 +6,17 @@ enum PriceRange {
   VeryExpensive
 }
 
+enum RankBy {
+  Prominence,
+  Distance
+}
+
+extension ParseToString on RankBy {
+  String parseToString() {
+    return this.toString()?.split('.')?.last;
+  }
+}
+
 class PlacesConstants {
   static const String REQ_TYPE_FIND = "findplacefromtext";
   static const String REQ_TYPE_TEXT = "textsearch";
@@ -17,8 +28,6 @@ class PlacesConstants {
   static const int PHOTO_MAX_WIDTH = 1600;
   static const int PHOTO_MAX_HEIGHT = 1600;
   static const int PLACE_RATING_MAX = 5;
-
-  static const String GOOGLE_API_KEY = "AIzaSyBVJS3scal30ALC3dAROjxJO2UAs5waNbU";
   
   static const int PARM_REGION_LENGTH = 2;
   static const int PARM_RADIUS_MAX = 50000;
@@ -37,6 +46,8 @@ class PlacesConstants {
   static const String PARM_PHOTO_REF = "photoreference";
   static const String PARM_MAX_HEIGHT = "maxheight";
   static const String PARM_MAX_WIDTH = "maxwidth";
+  static const String PARM_KEYWORD = "keyword";
+  static const String PARM_NEXT_PAGE = "pagetoken";
 
   static const List<String> PARM_TYPE_VALUES = [
     "amusement_park", "aquarium", "art_gallery",

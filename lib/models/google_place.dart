@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:world_wanders/utils/constants/places_constants.dart';
 import 'package:world_wanders/utils/helpers.dart';
+import 'package:world_wanders/utils/secrets.dart';
 
 class GooglePlace extends Equatable {
   static const String _photoUrl = "https://maps.googleapis.com/maps/api/place/photo";
@@ -23,6 +24,11 @@ class GooglePlace extends Equatable {
   final String vicinity;
   final String address;
   final String iconUrl;
+
+  bool _isSaved;
+
+  bool get hasUserSavedPlace => _isSaved == true ? true : false;
+  set hasUserSavedPlace(bool isSaved) => _isSaved = isSaved;
 
   GooglePlace({
     this.placeId, this.location, this.isOpenNow, this.isPermClosed,
@@ -52,7 +58,7 @@ class GooglePlace extends Equatable {
       maxHeight = PlacesConstants.PHOTO_MAX_HEIGHT;
     }
 
-    return "$_photoUrl?${PlacesConstants.PARM_KEY}=${PlacesConstants.GOOGLE_API_KEY}"
+    return "$_photoUrl?${PlacesConstants.PARM_KEY}=${Secrets.GOOGLE_API_KEY}"
       + "&${PlacesConstants.PARM_MAX_HEIGHT}=$maxHeight"
       + "&${PlacesConstants.PARM_MAX_WIDTH}=$maxWidth"
       + "&${PlacesConstants.PARM_PHOTO_REF}=$photoRef";
@@ -94,11 +100,8 @@ GooglePlace _gPlaceFromJson(Map<dynamic, dynamic> json) {
   if(json.containsKey('photos')) {
     (json['photos'] as List).forEach((key) {
       Map map = key;
-      var u = map.values;
-      var b = map.keys;
       if(map.containsKey('photo_reference')) {
-        var z = map['photo_reference'];
-        final url = GooglePlace.createPlacesPhotoRequestUrl(z);
+        final url = GooglePlace.createPlacesPhotoRequestUrl(map['photo_reference']);
         urls.add(url);
       }
     });

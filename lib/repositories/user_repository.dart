@@ -37,11 +37,17 @@ class UserRepository extends FirebaseDB {
     }
   }
 
-  Future<void> setUser(User user, String id) {
+  //maybe rethink about this whole set and overwriting everything
+  Future<void> setUser(User user, String id, { bool isMerge = false }) {
     _logger.i("Setting user...");
 
-    return cref.doc(id).set(user.toJson());
+    return cref.doc(id).set(user.toJson(), SetOptions(merge: isMerge));
       //.then((value) => _logger.i("User set!"))
       //.catchError((e) => _logger.w("Setting user FAILED!"));
+  }
+
+  Stream<DocumentSnapshot> userStream(String id) {
+    
+    return cref.doc(id).snapshots();
   }
 }

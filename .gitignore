@@ -40,7 +40,7 @@ app.*.symbols
 app.*.map.json
 android/app/*.json
 ios/Runner/*.plist
-*_secrets*
+*secrets*
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

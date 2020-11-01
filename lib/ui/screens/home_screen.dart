@@ -49,47 +49,49 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.all(UiConstants.PAD_BASE),
         child: Container(
           width: mq.size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 25.0),
-                child: Text(
-                  'Welcome ${userProvider.firstName}', 
-                  style: TextStyle(fontSize: UiConstants.FONT_H3),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: 25.0),
+                  child: Text(
+                    'Welcome ${userProvider.firstName}', 
+                    style: TextStyle(fontSize: UiConstants.FONT_H3),
+                  ),
                 ),
-              ),
-              //start tracking trip when date hits..
-              DefaultButton(
-                child: Text('Plan a new trip'),
-                onPressed: null,
-                width: btnWidth,
-              ),
-              SizedBox(height: 10.0,),
-              DefaultButton(
-                child: Text('Browse locations'),
-                onPressed: () => Navigator.of(context).pushNamed(RouteConstants.SEARCH_LOCATIONS),
-                width: btnWidth,
-              ),
-              SizedBox(height: 10.0,),
-              DefaultButton(
-                child: Text('History'),
-                onPressed: null,
-                width: btnWidth,
-              ),
-              SizedBox(height: 10.0,),
-              DefaultButton(
-                child: Text('Track a trip'),
-                onPressed: null,
-                width: btnWidth,
-              ),
-              SizedBox(height: 10.0,),
-              DefaultButton(
-                child: Text('Statistics'),
-                onPressed: null,
-                width: btnWidth,
-              ),
-            ]
+                //start tracking trip when date hits..
+                DefaultButton(
+                  child: Text('Plan a new trip'),
+                  onPressed: null,
+                  width: btnWidth,
+                ),
+                SizedBox(height: 10.0,),
+                DefaultButton(
+                  child: Text('Browse locations'),
+                  onPressed: () => Navigator.of(context).pushNamed(RouteConstants.SEARCH_LOCATIONS),
+                  width: btnWidth,
+                ),
+                SizedBox(height: 10.0,),
+                DefaultButton(
+                  child: Text('History'),
+                  onPressed: null,
+                  width: btnWidth,
+                ),
+                SizedBox(height: 10.0,),
+                DefaultButton(
+                  child: Text('Track a trip'),
+                  onPressed: null,
+                  width: btnWidth,
+                ),
+                SizedBox(height: 10.0,),
+                DefaultButton(
+                  child: Text('Statistics'),
+                  onPressed: null,
+                  width: btnWidth,
+                ),
+              ]
+            ),
           ),
         ),
       );

@@ -19,11 +19,15 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final authService = AuthenticationService();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => AuthProvider(AuthenticationService()),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider(authService)),
+        ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider(UserService(), authService)),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         routes: Routes.routes,
@@ -49,10 +53,7 @@ class MyApp extends StatelessWidget {
               else
                 _displayScreen = HomeScreen();
               
-              return ChangeNotifierProvider(
-                create: (context) => UserProvider(UserService()),
-                child: _displayScreen,
-              );
+              return _displayScreen;
             }
             else
               return LoginForm();

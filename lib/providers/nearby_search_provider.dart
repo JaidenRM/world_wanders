@@ -3,10 +3,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:world_wanders/models/city.dart';
 import 'package:world_wanders/models/google_place.dart';
 import 'package:world_wanders/services/nearby_place_request.dart';
+import 'package:world_wanders/services/places_request.dart';
 import 'package:world_wanders/utils/constants/places_constants.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 import 'package:world_wanders/utils/constants/validation_constants.dart';
 import 'package:world_wanders/utils/predefined_locations.dart';
+import 'package:world_wanders/utils/validation.dart';
 
 class NearbySearchProvider extends ChangeNotifier {
   List<City> _cities;
@@ -19,6 +21,7 @@ class NearbySearchProvider extends ChangeNotifier {
   List<GooglePlace> _gPlaces = [];
   PriceRange _minPrice;
   PriceRange _maxPrice;
+  PlacesRequest _lastRequest;
   
   bool _isAdvancedMenu = false;
   bool _isOpenNow = false;
@@ -45,6 +48,7 @@ class NearbySearchProvider extends ChangeNotifier {
   List<GooglePlace> get results => _gPlaces;
   int get minPriceRange => _minPrice == null ? 0 : _minPrice.index + 1;
   int get maxPriceRange => _maxPrice == null ? 0 : _maxPrice.index + 1;
+  PlacesRequest get lastRequest => _lastRequest;
 
   bool get isAdvancedMenu => _isAdvancedMenu;
   bool get isOpenNow => _isOpenNow;
@@ -134,11 +138,30 @@ class NearbySearchProvider extends ChangeNotifier {
     notifyListeners();
 
     //split into var incase we want to add parameters in future
-    final req = _generateRequest();
-      
-    _gPlaces = await req.fetchRequest();
+    _lastRequest = _generateRequest();
 
     _state = UiState.Completed;
+    notifyListeners();
+  }
+
+
+  Validation isValid() {
+    bool hasLocation = _selectedCountry != null && _selectedCity != null;
+    bool hasRadiusOrRankBy = _radius > 0 || _isRankedByDist;
+    String errMsg;
+
+    if(!hasLocation)
+      errMsg = "Please select a country and city";
+    if(!hasRadiusOrRankBy)
+      errMsg = "Please specify a search radius OR tick the nearby locations checkbox";
+    
+    return Validation(
+      error: errMsg
+    );
+  }
+
+  void reset() {
+    _state = UiState.Ready;
     notifyListeners();
   }
 

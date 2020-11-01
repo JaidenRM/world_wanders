@@ -19,13 +19,16 @@ class Routes {
   static Map<String, Widget Function(BuildContext)> routes = {
     RouteConstants.LOGIN: (context) => LoginForm(),
     RouteConstants.SIGNUP: (context) 
-      => ChangeNotifierProvider(
+    {
+      final authService = AuthenticationService();
+      return ChangeNotifierProvider(
         create: (context) => SignUpProvider(
-          authService: AuthenticationService(),
+          authService: authService,
           userService: UserService(),
         ),
         child: SignUpForm(),
-      ),
+      );
+    },
     RouteConstants.VERIFY_EMAIL: (context) => VerifyEmailScreen(),
     RouteConstants.FORGOT_PWD: (context)
       => ChangeNotifierProvider(
@@ -41,11 +44,7 @@ class Routes {
       ),
     RouteConstants.SEARCH_RESULTS: (context) 
       => ChangeNotifierProvider<PlacesProvider>(
-        create: (context) {
-          return PlacesProvider(
-            userService: UserService(),
-          );
-        },
+        create: (context) => PlacesProvider(),
         child: SearchResultsScreen(),
       ),
       

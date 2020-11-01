@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:world_wanders/models/google_place.dart';
 import 'package:world_wanders/providers/places_provider.dart';
+import 'package:world_wanders/providers/user_provider.dart';
 import 'package:world_wanders/utils/constants/places_constants.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 import 'package:world_wanders/utils/star_rating.dart';
@@ -36,10 +38,8 @@ class GooglePlaceListTile extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10.0,),
-            IconButton(
-              icon: Icon(Icons.directions_rounded, size: 48.0), 
-              onPressed: () => placesProvider.selectNewPlace(_gPlace.placeId),
-            ),
+            //can change colour to match text or smth but I think I prefer black atm
+            _buttonRow(context, mq, placesProvider, Colors.black),
             SizedBox(height: 10.0,),
           ]         
         ),
@@ -87,5 +87,26 @@ class GooglePlaceListTile extends StatelessWidget {
     :
       SizedBox();
             
+  }
+
+  Widget _buttonRow(BuildContext context, MediaQueryData mq, PlacesProvider placesProvider, Color colour) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final isSaved = userProvider?.savedPlaces?.any((place) => place.placeId == _gPlace.placeId) ?? false;
+    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          icon: Icon(Icons.directions_rounded, size: 55.0, color: colour,), 
+          onPressed: () => placesProvider.selectNewPlace(_gPlace.placeId),
+        ),
+        IconButton(
+          icon: isSaved ? 
+            Icon(FontAwesomeIcons.solidHeart, size: 48.0, color: colour,) : 
+            Icon(FontAwesomeIcons.heart, size: 48.0, color: colour,),
+          onPressed: () => isSaved ? userProvider.removePlace(_gPlace.placeId) : userProvider.savePlace(_gPlace),
+        ),
+      ],
+    );
   }
 }

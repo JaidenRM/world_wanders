@@ -3,15 +3,18 @@ import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:world_wanders/models/google_place.dart';
 import 'package:world_wanders/providers/places_provider.dart';
-import 'package:world_wanders/services/places_request.dart';
 import 'package:world_wanders/ui/buttons/default_button.dart';
 import 'package:world_wanders/ui/screens/components/google_place_list_tile.dart';
 import 'package:world_wanders/ui/utils/my_background.dart';
+import 'package:world_wanders/ui/utils/my_loading_widget.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
 class SearchResultsScreen extends StatelessWidget {
+  final Function _onBack;
+
+  SearchResultsScreen({ Function onBackButton })
+    : _onBack = onBackButton;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,20 @@ class SearchResultsScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(UiConstants.PAD_BASE),
                 child: Row(
                   children: [
+                    if(_onBack != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: UiConstants.PAD_BASE),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: UiConstants.PRIMARY_COLOUR,
+                          ),
+                          child: BackButton(
+                            color: UiConstants.TERTIARY_COLOUR,
+                            onPressed: _onBack,
+                          ),
+                        ),
+                      ),
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
@@ -81,15 +98,38 @@ class SearchResultsScreen extends StatelessWidget {
                   initialChildSize: 0.25,
                   maxChildSize: 0.75,
                   builder: (context, controller) {
+                    controller.addListener(() { 
+                      if(controller.position.atEdge) {
+                        if(controller.position.pixels > 0) {
+                          placesProvider.tryFetchNextPage();
+                        }
+                      }
+                    });
+
                     return Container(
                       child: Stack(
                         children: [
                           ListView.builder(
                             controller: controller,
-                            itemCount: placesProvider.googlePlaces.length,
+                            itemCount: (placesProvider.googlePlaces.length),
                             itemBuilder: (context, idx) {
                               var gPlace = placesProvider.googlePlaces[idx];
-                              return GooglePlaceListTile(gPlace: gPlace,);
+                              return 
+                                idx == (placesProvider.googlePlaces.length - 1) 
+                                  && placesProvider.state == UiState.Loading
+                                ?
+                                  Column(
+                                    children: [
+                                      GooglePlaceListTile(gPlace: gPlace,),
+                                      MyLoadingWidget(),
+                                      // alternative if the auto/listener is too finicky or if settings options happens
+                                      // DefaultButton(
+                                      //   child: Text('Bottom',),
+                                      //   onPressed: () => placesProvider.tryFetchNextPage(),
+                                      // ),
+                                    ],
+                                  ) :
+                                  GooglePlaceListTile(gPlace: gPlace,);
                             }
                           ),
                           Positioned(

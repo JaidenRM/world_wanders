@@ -25,6 +25,11 @@ class GooglePlace extends Equatable {
   final String address;
   final String iconUrl;
 
+  bool _isSaved;
+
+  bool get hasUserSavedPlace => _isSaved == true ? true : false;
+  set hasUserSavedPlace(bool isSaved) => _isSaved = isSaved;
+
   GooglePlace({
     this.placeId, this.location, this.isOpenNow, this.isPermClosed,
     this.photoUrls, this.price, this.rating, this.name, this.plusCodeGlobal,
@@ -95,11 +100,8 @@ GooglePlace _gPlaceFromJson(Map<dynamic, dynamic> json) {
   if(json.containsKey('photos')) {
     (json['photos'] as List).forEach((key) {
       Map map = key;
-      var u = map.values;
-      var b = map.keys;
       if(map.containsKey('photo_reference')) {
-        var z = map['photo_reference'];
-        final url = GooglePlace.createPlacesPhotoRequestUrl(z);
+        final url = GooglePlace.createPlacesPhotoRequestUrl(map['photo_reference']);
         urls.add(url);
       }
     });

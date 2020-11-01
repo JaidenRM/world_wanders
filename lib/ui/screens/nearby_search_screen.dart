@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:world_wanders/providers/nearby_search_provider.dart';
 import 'package:world_wanders/providers/places_provider.dart';
+import 'package:world_wanders/providers/user_provider.dart';
 import 'package:world_wanders/services/user_service.dart';
 import 'package:world_wanders/ui/buttons/default_button.dart';
 import 'package:world_wanders/ui/screens/search_results_screen.dart';
@@ -20,10 +21,13 @@ class NearbySearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nearbyProvider = Provider.of<NearbySearchProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(
+      appBar: nearbyProvider.state != UiState.Completed ?
+      AppBar(
         title: Text('Search Nearby'),
-      ),
+      ) : null,
       body: MyBackground(
         child: Container(
           child: Consumer<NearbySearchProvider>(
@@ -34,13 +38,9 @@ class NearbySearchScreen extends StatelessWidget {
                 case UiState.Error:
                   return MyErrorWidget('Unknown error');
                 case UiState.Completed:
-                //TOTRY: Change to the screen instead so we dont lose the provider on pushing the route??
                   return ChangeNotifierProvider<PlacesProvider>(
-                    create: (context) => PlacesProvider(
-                      userService: UserService(),
-                      places: provider.results,
-                    ),
-                    child: SearchResultsScreen(),
+                    create: (context) => PlacesProvider(request: provider.lastRequest),
+                    child: SearchResultsScreen(onBackButton: provider.reset,),
                   );
                 default:
                   return _form(context, provider);
@@ -54,6 +54,7 @@ class NearbySearchScreen extends StatelessWidget {
 
   Widget _form(BuildContext context, NearbySearchProvider provider) {
     final mq = MediaQuery.of(context);
+    final validation = provider.isValid();
 
     return SingleChildScrollView(
       child: Column(
@@ -82,10 +83,14 @@ class NearbySearchScreen extends StatelessWidget {
           ),
           DropdownButtonFormField(
             value: provider.selectedCity,
+            isExpanded: true,
             items: provider.citiesInCountry.map((city) {
               final hasState = ValidationConstants.isStringNotNullOrEmpty(city.state);
               return DropdownMenuItem(
-                child: Text(city.name + (hasState.hasError ? "" : ", ${hasState.value}")),
+                child: Text(
+                  city.name + (hasState.hasError ? "" : ", ${hasState.value}"),
+                  //overflow: TextOverflow.ellipsis,
+                ),
                 value: city,
               );
             }).toList(), 
@@ -119,15 +124,10 @@ class NearbySearchScreen extends StatelessWidget {
           SizedBox(height: 20.0,),
           DefaultButton(
             child: Text('Search'),
-            onPressed: provider.submitSearch,
+            onPressed: !validation.hasError ? provider.submitSearch : null,
           ),
-          //Look at adding animated icons that turn into these form fields on click, maybe a '+' button?
-            //i.e.: Keyword [+]
-          // TextField(
-          //   decoration: InputDecoration(
-          //     labelText: 'Keywords'
-          //   ),
-          // ),
+          if(validation.hasError)
+            Text(validation.error, style: UiConstants.TS_ERR,),
         ]
       ),
     );

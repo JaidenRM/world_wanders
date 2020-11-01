@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:world_wanders/models/google_place.dart';
-import 'package:world_wanders/services/interfaces/user_service_interface.dart';
 import 'package:world_wanders/services/places_request.dart';
 import 'package:world_wanders/services/text_search_request.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 
 class PlacesProvider extends ChangeNotifier {
-  final UserServiceInterface _userService;
 
   UiState _state = UiState.Ready;
   String _msg;
@@ -15,6 +14,7 @@ class PlacesProvider extends ChangeNotifier {
   String _currPlaceId;
   List<GooglePlace> _gPlaces = [];
   Set<Marker> _gPlaceMarkers = {};
+  PlacesRequest _lastRequest;
 
   UiState get state => _state;
   String get searchText => _searchText;
@@ -25,13 +25,19 @@ class PlacesProvider extends ChangeNotifier {
 
   GoogleMapController gController;
   
-  PlacesProvider({ 
-    UserServiceInterface userService,
-    List<GooglePlace> places
+  PlacesProvider({
+    PlacesRequest request
   })
-    : assert(userService != null),
-      _userService = userService,
-      _gPlaces = places ?? [];
+    : _lastRequest = request
+  {
+    SchedulerBinding.instance.addPostFrameCallback((_) async { 
+      if(_lastRequest != null) {
+        _gPlaces = await _lastRequest.fetchRequest();
+        _updateGoogleController(_gPlaces[0]);
+        notifyListeners();
+      }
+    });
+  }
 
   void changeSearchText(String text) {
     _searchText = text;
@@ -57,6 +63,22 @@ class PlacesProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+  
+  void tryFetchNextPage() async {
+
+    if(_lastRequest != null) {
+      _state = UiState.Loading;
+      notifyListeners();
+
+      final newPlaces = await _lastRequest.fetchNextPageRequest();
+      if(newPlaces != null) {
+        _gPlaces.addAll(newPlaces);
+      }
+      
+      _state = UiState.Completed;
+      notifyListeners();
+    }
   }
 
   void selectNewPlace(String placeId) {

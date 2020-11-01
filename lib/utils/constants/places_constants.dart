@@ -47,6 +47,7 @@ class PlacesConstants {
   static const String PARM_MAX_HEIGHT = "maxheight";
   static const String PARM_MAX_WIDTH = "maxwidth";
   static const String PARM_KEYWORD = "keyword";
+  static const String PARM_NEXT_PAGE = "pagetoken";
 
   static const List<String> PARM_TYPE_VALUES = [
     "amusement_park", "aquarium", "art_gallery",

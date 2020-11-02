@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: 10.0,),
                 DefaultButton(
                   child: Text('History'),
-                  onPressed: null,
+                  onPressed: () => Navigator.of(context).pushNamed(RouteConstants.HISTORY),
                   width: btnWidth,
                 ),
                 SizedBox(height: 10.0,),

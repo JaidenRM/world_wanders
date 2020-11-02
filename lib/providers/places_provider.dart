@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:world_wanders/models/google_place.dart';
+import 'package:world_wanders/models/places_widget_interface.dart';
 import 'package:world_wanders/services/places_request.dart';
 import 'package:world_wanders/services/text_search_request.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
@@ -12,36 +12,40 @@ class PlacesProvider extends ChangeNotifier {
   String _msg;
   String _searchText = "";
   String _currPlaceId;
-  List<GooglePlace> _gPlaces = [];
+  List<PlacesWidget> _gPlaces = [];
   Set<Marker> _gPlaceMarkers = {};
   PlacesRequest _lastRequest;
 
   UiState get state => _state;
   String get searchText => _searchText;
   String get msg => _msg;
-  List<GooglePlace> get googlePlaces => _gPlaces;
+  List<PlacesWidget> get googlePlaces => _gPlaces;
   Set<Marker> get markers => _gPlaceMarkers;
   String get currPlaceId => _currPlaceId;
 
   GoogleMapController gController;
   
   PlacesProvider({
-    PlacesRequest request
+    PlacesRequest request,
+    List<PlacesWidget> preloadedPlaces,
   })
-    : _lastRequest = request
+    : _lastRequest = request,
+      _gPlaces = preloadedPlaces ?? []
   {
-    SchedulerBinding.instance.addPostFrameCallback((_) async { 
-      if(_lastRequest != null) {
-        _gPlaces = await _lastRequest.fetchRequest();
-        _updateGoogleController(_gPlaces[0]);
-        notifyListeners();
-      }
-    });
+    if(_gPlaces.length == 0) {
+      SchedulerBinding.instance.addPostFrameCallback((_) async { 
+        if(_lastRequest != null) {
+          _gPlaces = await _lastRequest.fetchRequest();
+          _updateGoogleController(_gPlaces[0]);
+          notifyListeners();
+        }
+      });
+    }
   }
 
   void changeSearchText(String text) {
     _searchText = text;
-
+    
     notifyListeners();
   }
 
@@ -90,7 +94,7 @@ class PlacesProvider extends ChangeNotifier {
     }
   }
 
-  void _updateGoogleController(GooglePlace place) {
+  void _updateGoogleController(PlacesWidget place) {
     if(gController != null && place != null) {
       if(place.location != null) {
         _gPlaceMarkers.add(Marker(

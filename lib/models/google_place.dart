@@ -1,15 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:world_wanders/models/places_widget_interface.dart';
+import 'package:world_wanders/ui/screens/components/google_place_list_tile.dart';
 import 'package:world_wanders/utils/constants/places_constants.dart';
 import 'package:world_wanders/utils/helpers.dart';
 import 'package:world_wanders/utils/secrets.dart';
 
-class GooglePlace extends Equatable {
+class GooglePlace extends PlacesWidget {
   static const String _photoUrl = "https://maps.googleapis.com/maps/api/place/photo";
   
-  final String placeId;
-  
-  final LatLng location;
   final bool isOpenNow;
   final bool isPermClosed;
   final List<String> photoUrls;
@@ -31,10 +30,10 @@ class GooglePlace extends Equatable {
   set hasUserSavedPlace(bool isSaved) => _isSaved = isSaved;
 
   GooglePlace({
-    this.placeId, this.location, this.isOpenNow, this.isPermClosed,
+    String placeId, LatLng location, this.isOpenNow, this.isPermClosed,
     this.photoUrls, this.price, this.rating, this.name, this.plusCodeGlobal,
     this.vicinity, this.address, this.types, this.iconUrl, this.numOfRatings
-  });
+  }):super(placeId, location);
   
   @override
   List<Object> get props => [
@@ -72,6 +71,11 @@ class GooglePlace extends Equatable {
     });
 
     return humanisedStrings.join(", ");
+  }
+
+  @override
+  Widget toListTile(BuildContext context) {
+    return GooglePlaceListTile(gPlace: this);
   }
 }
 

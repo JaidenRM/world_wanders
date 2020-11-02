@@ -9,4 +9,6 @@ class RouteConstants {
   static const String SEARCH_RESULTS = "/travel/results";
 
   static const String ASSET_CSV_LOCATIONS = "lib/assets/files/world_major_cities.csv";
+
+  static const String HISTORY = "/history";
 }

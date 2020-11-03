@@ -105,6 +105,7 @@ class UserService implements UserServiceInterface {
       address: gPlace.address ?? gPlace.vicinity,
       name: gPlace.name,
       placeId: gPlace.placeId,
+      location: gPlace.location,
       gPlusCode: gPlace.plusCodeGlobal,
       dateAdded: DateTime.now(),
     );

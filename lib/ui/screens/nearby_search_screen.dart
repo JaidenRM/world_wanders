@@ -126,8 +126,9 @@ class NearbySearchScreen extends StatelessWidget {
             child: Text('Search'),
             onPressed: !validation.hasError ? provider.submitSearch : null,
           ),
+          SizedBox(height: 10.0),
           if(validation.hasError)
-            Text(validation.error, style: UiConstants.TS_ERR,),
+            Text(validation.error, style: UiConstants.TS_ERR, textAlign: TextAlign.center,),
         ]
       ),
     );

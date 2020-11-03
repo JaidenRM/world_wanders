@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:world_wanders/models/google_place.dart';
+import 'package:world_wanders/providers/history_provider.dart';
 import 'package:world_wanders/providers/nearby_search_provider.dart';
 import 'package:world_wanders/providers/places_provider.dart';
 import 'package:world_wanders/providers/validation/forgot_password_provider.dart';
@@ -10,6 +10,7 @@ import 'package:world_wanders/services/user_service.dart';
 import 'package:world_wanders/ui/forms/forgot_password_form.dart';
 import 'package:world_wanders/ui/forms/login_form.dart';
 import 'package:world_wanders/ui/forms/sign_up_form.dart';
+import 'package:world_wanders/ui/screens/history_screen.dart';
 import 'package:world_wanders/ui/screens/nearby_search_screen.dart';
 import 'package:world_wanders/ui/screens/search_results_screen.dart';
 import 'package:world_wanders/ui/screens/verify_email_screen.dart';
@@ -30,6 +31,11 @@ class Routes {
       );
     },
     RouteConstants.VERIFY_EMAIL: (context) => VerifyEmailScreen(),
+    RouteConstants.HISTORY: (context)
+      => ChangeNotifierProvider<HistoryProvider>(
+        create: (context) => HistoryProvider(),
+        child: HistoryScreen(),
+      ),
     RouteConstants.FORGOT_PWD: (context)
       => ChangeNotifierProvider(
         create: (context) => ForgotPasswordProvider(

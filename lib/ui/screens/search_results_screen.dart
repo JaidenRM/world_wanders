@@ -31,20 +31,27 @@ class SearchResultsScreen extends StatelessWidget {
                 onMapCreated: (GoogleMapController controller) async {
                   placesProvider.gController = controller;
                   
-                  if(placesProvider.googlePlaces != null && placesProvider.googlePlaces.length > 0) {
+                  if(
+                    placesProvider.googlePlaces != null 
+                    && placesProvider.googlePlaces.length > 0
+                  ) {
                     SchedulerBinding.instance.addPostFrameCallback((_) { 
                       placesProvider.selectNewPlace(placesProvider.googlePlaces[0].placeId);
                     });
                   } else {
                     var currPos = await Geolocator.getCurrentPosition();
 
+                  if(
+                    placesProvider.googlePlaces == null 
+                    && placesProvider.googlePlaces.length == 0
+                  ) {
                     controller.moveCamera(CameraUpdate.newCameraPosition(
                       CameraPosition(
                         target: LatLng(currPos.latitude, currPos.longitude),
                         zoom: 15.0
                       )
                     ));
-                  }
+                  }}
                 },
                 markers: placesProvider.markers,
                 myLocationEnabled: true,
@@ -120,7 +127,8 @@ class SearchResultsScreen extends StatelessWidget {
                                 ?
                                   Column(
                                     children: [
-                                      GooglePlaceListTile(gPlace: gPlace,),
+                                      placesProvider.googlePlaces[idx].toListTile(context),
+                                      //GooglePlaceListTile(gPlace: gPlace,),
                                       MyLoadingWidget(),
                                       // alternative if the auto/listener is too finicky or if settings options happens
                                       // DefaultButton(
@@ -129,7 +137,7 @@ class SearchResultsScreen extends StatelessWidget {
                                       // ),
                                     ],
                                   ) :
-                                  GooglePlaceListTile(gPlace: gPlace,);
+                                  placesProvider.googlePlaces[idx].toListTile(context);
                             }
                           ),
                           Positioned(

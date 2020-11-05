@@ -85,12 +85,18 @@ class TripRepository extends FirebaseDB {
     
   }
 
-  Future<void> setTrip(Trip trip) {
+  Future<DocumentReference> addTrip(Trip trip) {
     _logger.i("Setting trip...");
-
-    final empty = cref.add(trip.toJson())
-      .then((value) => _logger.i("Trip set!"))
-      .catchError((e) => _logger.w("Setting trip FAILED!"));
+    final x = trip.toJson();
+    final empty = cref.add(x)
+      .then((value) { 
+        _logger.i("Trip set!");
+        return value;
+      })
+      .catchError((e) {
+        _logger.w("Setting trip FAILED! Error: ${e.toString()}");
+        return null;
+      });
 
     return empty;
   }

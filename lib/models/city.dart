@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,4 +65,28 @@ class City extends Equatable {
 
     return number;
   }
+
+  factory City.fromJson(Map<dynamic, dynamic> json) => _cityFromJson(json);
+  Map<String, dynamic> toJson() => _cityToJson(this);
+
+  
 }
+
+//helpers
+Map<String, dynamic> _cityToJson(City city) {
+  return <String, dynamic> {
+    'name': city.name,
+    'state': city.state,
+    'country': city.country,
+    'coords': city.coords,
+    'latlng': GeoPoint(city.latlng.latitude, city.latlng.longitude),
+  };
+}
+
+City _cityFromJson(Map<dynamic, dynamic> json) =>
+  City(
+    name: json['name'],
+    state: json['state'],
+    country: json['country'],
+    coords: json['coords'],
+  );

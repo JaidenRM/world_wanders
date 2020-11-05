@@ -63,7 +63,7 @@ class HomeScreen extends StatelessWidget {
                 //start tracking trip when date hits..
                 DefaultButton(
                   child: Text('Plan a new trip'),
-                  onPressed: null,
+                  onPressed: () => Navigator.of(context).pushNamed(RouteConstants.TRIP_NEW),
                   width: btnWidth,
                 ),
                 SizedBox(height: 10.0,),

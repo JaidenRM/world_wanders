@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum CaseType {
   SnakeCase
@@ -40,6 +40,10 @@ class Helpers {
     }
 
     return humanStr;
+  }
+
+  static String currUserId() {
+    return FirebaseAuth.instance.currentUser?.uid;
   }
 
 }

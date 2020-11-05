@@ -36,6 +36,15 @@ class ValidationConstants {
     );
   }
 
+  static Validation isValidDate(String date) {
+    var isValid = isDate(date);
+
+    return Validation(
+      value: isValid ? date : null,
+      error: isValid ? null : 'Date is not valid'
+    );
+  }
+
   static Validation isValidPassword(String pwd) {
     final alphaLower = whitelist(pwd, 'a-z').length;
     final alphaUpper = whitelist(pwd, 'A-Z').length;

@@ -7,11 +7,10 @@ import 'package:world_wanders/services/places_request.dart';
 import 'package:world_wanders/utils/constants/places_constants.dart';
 import 'package:world_wanders/utils/constants/ui_constants.dart';
 import 'package:world_wanders/utils/constants/validation_constants.dart';
-import 'package:world_wanders/utils/predefined_locations.dart';
+import 'package:world_wanders/utils/mixins/destinations_mixin.dart';
 import 'package:world_wanders/utils/validation.dart';
 
-class NearbySearchProvider extends ChangeNotifier {
-  List<City> _cities;
+class NearbySearchProvider extends ChangeNotifier with DestinationsMixin {
   String _selectedCountry;
   City _selectedCity;
   UiState _state = UiState.Loading;
@@ -27,18 +26,6 @@ class NearbySearchProvider extends ChangeNotifier {
   bool _isOpenNow = false;
   bool _isRankedByDist = false;
   
-  List<String> get countries => _cities.fold<List<String>>([], (countries, city) {
-    if(!countries.contains(city.country))
-      countries.add(city.country);
-
-    return countries;
-  });
-  List<City> get citiesInCountry => _cities.fold<List<City>>([], (cities, city) {
-    if(city.country == _selectedCountry)
-      cities.add(city);
-    
-    return cities;
-  });
   UiState get state => _state;
   String get selectedCountry => _selectedCountry;
   City get selectedCity => _selectedCity;
@@ -55,28 +42,15 @@ class NearbySearchProvider extends ChangeNotifier {
   bool get isRankedByDist => _isRankedByDist;
 
   NearbySearchProvider() {
-    SchedulerBinding.instance.addPostFrameCallback((_) { 
-      initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) async { 
+      await loadData();
+
+      _state = UiState.Ready;
+
+      notifyListeners();
     });
   }
-
-  void initState() async {
-    _cities = await PredefinedLocations().getCities();
-    _cities.sort((prev, curr) {
-      var cmpCountry = prev.country.compareTo(curr.country);
-      if(cmpCountry != 0) return cmpCountry;
-
-      var cmpCity = prev.name.compareTo(curr.name);
-      if(cmpCity != 0) return cmpCity;
-
-      return prev.state.compareTo(curr.state);
-    });
-
-    _state = UiState.Ready;
-
-    notifyListeners();
-  }
-
+  
   void setCountry(String country) {
     _selectedCountry = country;
     notifyListeners();

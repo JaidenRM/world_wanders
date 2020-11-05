@@ -4,8 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:world_wanders/providers/nearby_search_provider.dart';
 import 'package:world_wanders/providers/places_provider.dart';
-import 'package:world_wanders/providers/user_provider.dart';
-import 'package:world_wanders/services/user_service.dart';
 import 'package:world_wanders/ui/buttons/default_button.dart';
 import 'package:world_wanders/ui/screens/search_results_screen.dart';
 import 'package:world_wanders/ui/utils/my_background.dart';
@@ -17,7 +15,7 @@ import 'package:world_wanders/utils/constants/validation_constants.dart';
 import 'package:world_wanders/utils/helpers.dart';
 import 'package:world_wanders/utils/icon_range_rating.dart';
 
-class NearbySearchScreen extends StatelessWidget {
+class NearbySearchForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +68,7 @@ class NearbySearchScreen extends StatelessWidget {
           ),
           DropdownButtonFormField(
             value: provider.selectedCountry,
-            items: provider.countries.map((country) => 
+            items: provider.getSortedCountries().map((country) => 
               DropdownMenuItem(
                 child: Text(country),
                 value: country,
@@ -84,16 +82,19 @@ class NearbySearchScreen extends StatelessWidget {
           DropdownButtonFormField(
             value: provider.selectedCity,
             isExpanded: true,
-            items: provider.citiesInCountry.map((city) {
-              final hasState = ValidationConstants.isStringNotNullOrEmpty(city.state);
-              return DropdownMenuItem(
-                child: Text(
-                  city.name + (hasState.hasError ? "" : ", ${hasState.value}"),
-                  //overflow: TextOverflow.ellipsis,
-                ),
-                value: city,
-              );
-            }).toList(), 
+            items: provider
+              .getSortedCitiesInCountry(provider.selectedCountry)
+              .map((city) {
+                final hasState = ValidationConstants.isStringNotNullOrEmpty(city.state);
+                return DropdownMenuItem(
+                  child: Text(
+                    city.name + (hasState.hasError ? "" : ", ${hasState.value}"),
+                    //overflow: TextOverflow.ellipsis,
+                  ),
+                  value: city,
+                );
+              })
+              .toList(), 
             onChanged: (value) => provider.setCity(value),
             decoration: InputDecoration(
               labelText: 'City',

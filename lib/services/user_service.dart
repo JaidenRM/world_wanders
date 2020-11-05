@@ -7,11 +7,11 @@ import 'package:world_wanders/models/user_profile.dart';
 import 'package:world_wanders/repositories/user_repository.dart';
 import 'package:world_wanders/services/interfaces/user_service_interface.dart';
 import 'package:world_wanders/services/logger.dart';
+import 'package:world_wanders/utils/helpers.dart';
 import 'package:world_wanders/utils/status.dart';
 import 'package:world_wanders/models/user.dart' as Model;
 
 class UserService implements UserServiceInterface {
-  final FirebaseAuth _fba;
   final Logger _logger;
   final UserRepository _userRepository;
   static const String _name = "UserService";
@@ -20,8 +20,7 @@ class UserService implements UserServiceInterface {
   StreamSubscription<Model.User> _userSubscription;
 
   UserService()
-    : _fba = FirebaseAuth.instance,
-      _userRepository = UserRepository(),
+    : _userRepository = UserRepository(),
       _logger = getLogger(_name) 
     {
       _userSubscription = 
@@ -47,7 +46,7 @@ class UserService implements UserServiceInterface {
   @override
   Future<Status> setProfile(UserProfile profile) async {
     final user = await getUser();
-    final uid = _fba.currentUser.uid;
+    final uid = Helpers.currUserId();
 
     if(user == null)
       return Status('Could not get current user', false);
@@ -76,7 +75,7 @@ class UserService implements UserServiceInterface {
   @override
   Future<Status> removePlace(String placeId) async {
     final user = await getUser();
-    final uid = _fba.currentUser.uid;
+    final uid = Helpers.currUserId();
 
     if(!user.savedPlaces.any((place) => place.placeId == placeId))
       return Status('No saved places with this id found', false);
@@ -100,7 +99,7 @@ class UserService implements UserServiceInterface {
   @override
   Future<Status> savePlace(GooglePlace gPlace) async {
     final user = await getUser();
-    final uid = _fba.currentUser.uid;
+    final uid = Helpers.currUserId();
     final sPlace = SavedPlace(
       address: gPlace.address ?? gPlace.vicinity,
       name: gPlace.name,
@@ -127,7 +126,7 @@ class UserService implements UserServiceInterface {
 
   @override
   Stream<Model.User> currUserStream() {
-    final uid = _fba.currentUser?.uid;
+    final uid = Helpers.currUserId();
 
     return _userRepository.userStream(uid).map((event) {
       if(event.exists) {
@@ -141,7 +140,7 @@ class UserService implements UserServiceInterface {
   @override
   Future<Model.User> getUser() async {
     if(_currUser == null) {
-      final uid = _fba.currentUser?.uid;
+      final uid = Helpers.currUserId();
       return await _userRepository.getUser(uid);
     }
 

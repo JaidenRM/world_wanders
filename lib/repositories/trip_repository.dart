@@ -45,18 +45,16 @@ class TripRepository extends FirebaseDB {
       .catchError((e) => _logger.w("transaction to delete FAILED after completing $cntPlaces places and $cntTransport transport"));
   }
 
-  Stream<Trip> getTrip(String id) {
+  Future<Trip> getTrip(String id) async {
     _logger.i("looking for trip $id...");
 
     try {
-      final mappedTrip = cref
+      final trip = await cref
         .doc(id)
-        .get()
-        .asStream()
-        .map((dss) => Trip.fromJson(dss.data()));
+        .get();
         
       _logger.i("trip found!");
-      return mappedTrip;
+      return Trip.fromJson(trip.data());
     } catch(e) {
       _logger.w("looking for trip FAILED");
       return null;
@@ -64,15 +62,14 @@ class TripRepository extends FirebaseDB {
   }
 
   //think about making sure only get user trips!
-  Stream<List<Trip>> getTrips() {
+  Future<List<Trip>> getTrips() {
     _logger.i("looking for all trips...");
 
     try {
       final mappedTrips = cref
         .where('userId', isEqualTo: _userId) //ensure only user trips accessed
         .get()
-        .asStream()
-        .map((qs) => 
+        .then((qs) => 
           qs.docs.map((doc) => Trip.fromJson(doc.data())).toList()
         );
       

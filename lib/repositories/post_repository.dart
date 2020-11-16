@@ -23,32 +23,29 @@ class PostRepository extends FirebaseDB {
       .catchError((e) => _logger.w("error occurred while trying to delete post $id"));
   }
 
-  Stream<Post> getPost(String id) {
+  Future<Post> getPost(String id) async {
     _logger.i("looking for post $id...");
 
     try {
-      final mappedPost = cref
+      final post = await cref
         .doc(id)
-        .get()
-        .asStream()
-        .map((dss) => Post.fromJson(dss.data()));
+        .get();
         
       _logger.i("post found!");
-      return mappedPost;
+      return Post.fromJson(post.data());
     } catch(e) {
       _logger.w("looking for post FAILED");
       return null;
     }
   }
 
-  Stream<List<Post>> getPosts() {
+  Future<List<Post>> getPosts() {
     _logger.i("looking for all posts...");
 
     try {
       final mappedPosts = cref
         .get()
-        .asStream()
-        .map((qs) => 
+        .then((qs) => 
           qs.docs.map((doc) => Post.fromJson(doc.data())).toList()
         );
       

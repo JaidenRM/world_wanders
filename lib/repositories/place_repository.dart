@@ -25,32 +25,29 @@ class PlaceRepository extends FirebaseDB {
       .catchError((e) => _logger.w("error occurred while trying to delete place $id"));
   }
 
-  Stream<Place> getPlace(String id) {
+  Future<Place> getPlace(String id) async {
     _logger.i("looking for place $id...");
 
     try {
-      final mappedPlace = cref
+      final place = await cref
         .doc(id)
-        .get()
-        .asStream()
-        .map((dss) => Place.fromJson(dss.data()));
+        .get();
         
       _logger.i("place found!");
-      return mappedPlace;
+      return Place.fromJson(place.data());
     } catch(e) {
       _logger.w("looking for place FAILED");
       return null;
     }
   }
 
-  Stream<List<Place>> getPlaces() {
+  Future<List<Place>> getPlaces() {
     _logger.i("looking for all places...");
 
     try {
       final mappedPlaces = cref
         .get()
-        .asStream()
-        .map((qs) => 
+        .then((qs) => 
           qs.docs.map((doc) => Place.fromJson(doc.data())).toList()
         );
       

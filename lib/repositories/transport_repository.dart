@@ -25,32 +25,29 @@ class TransportRepository extends FirebaseDB {
       .catchError((e) => _logger.w("error occurred while trying to delete transport $id"));
   }
 
-  Stream<Transport> getTransport(String id) {
+  Future<Transport> getTransport(String id) async {
     _logger.i("looking for transport $id...");
 
     try {
-      final mappedTransport = cref
+      final transport = await cref
         .doc(id)
-        .get()
-        .asStream()
-        .map((dss) => Transport.fromJson(dss.data()));
+        .get();
         
       _logger.i("transport found!");
-      return mappedTransport;
+      return Transport.fromJson(transport.data());
     } catch(e) {
       _logger.w("looking for transport FAILED");
       return null;
     }
   }
 
-  Stream<List<Transport>> getTransports() {
+  Future<List<Transport>> getTransports() {
     _logger.i("looking for all transports...");
 
     try {
       final mappedTransports = cref
         .get()
-        .asStream()
-        .map((qs) => 
+        .then((qs) => 
           qs.docs.map((doc) => Transport.fromJson(doc.data())).toList()
         );
       
